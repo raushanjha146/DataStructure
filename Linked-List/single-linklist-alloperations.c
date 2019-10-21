@@ -47,6 +47,44 @@ void insertLast(struct Node** h, int n)
     *h=tmp;
 }
 
+/* Function to delete first node */
+void deleteFirst(struct Node** h)
+{
+  struct Node* tmp =*h;
+  if(*h != NULL)
+  {
+    (*h)=(*h)->next;
+    free(tmp);;
+  }
+  else
+    printf("Cannot delete node, List is empty!!");  
+}
+
+/* Function to delete last node */
+void deleteLast(struct Node** h)
+{
+  struct Node* tmp =NULL;
+  struct Node* h1 = *h;
+  if(*h != NULL)
+  {
+    if(h1->next != NULL)
+    {
+      while((h1->next)->next != NULL)
+	h1 = h1->next;
+      tmp=h1->next;
+      h1->next=NULL;
+    }
+    else
+    {
+      tmp=*h;
+      *h=NULL;
+    }
+    free(tmp);
+  }
+  else
+    printf("Cannot delete node, List is empty!!");
+}
+
 
 
 /* Function to print linked list */
@@ -81,12 +119,11 @@ int main()
           printf("=======================================================\n");
           printf(" 1.Insert at the beginning\n");
           printf(" 2.Insert at the end    \n");
-	  printf(" 3.Display    \n");
-          
+	  printf(" 3.Display    \n"); 
           //printf(" 4.Insert at the end  \n");
           //printf(" 5.Insert at specified position       \n");
-          //printf(" 6.Delete from beginning      \n");
-          //printf(" 7.Delete from the end        \n");
+          printf(" 4.Delete from beginning      \n");
+          printf(" 5.Delete from the end        \n");
           //printf(" 8.Delete from specified position     \n");
           printf(" 0.Exit       \n");
           printf("=======================================================\n");
@@ -118,7 +155,24 @@ int main()
 		printf("list is : \n");
 		printList(head);
 		break;
-
+	    case 4:
+		printf("before deletion the list is : \n");
+		printList(head);
+		//printf("Please Enter the element to be inserted from start:\n"); 
+		//scanf("%d",&num);
+		deleteFirst(&head);
+		printf("after deletion the list is : \n");
+		printList(head);
+		break;
+    	    case 5:
+		printf("before deletion the list is : \n");
+		printList(head);
+		//printf("Please Enter the element to be inserted from start:\n"); 
+		//scanf("%d",&num);
+		deleteLast(&head);
+		printf("after deletion the list is : \n");
+		printList(head);
+		break;
 	    case 0:
 		//printf("Thank you!!\nTo exit the program, Please press any key \n");
 		printf("Thank you!!\nNow Exiting \n");
