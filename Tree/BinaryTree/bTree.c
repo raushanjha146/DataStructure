@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include <stdbool.h>
 
 struct node
 {
@@ -7,6 +8,123 @@ struct node
 	struct node *left;
 	struct node *right;
 };
+
+struct stackNode 
+{ 
+  struct node *t; 				// poiner to tree node
+  struct stackNode *next; 		// pointer to next stack node
+}; 
+
+void push(struct stackNode** topRef, struct node *t); 
+struct node *pop(struct stackNode** topRef); 
+int isEmpty(struct stackNode *top); 
+
+
+/* Iterative function for inorder traversal */
+void printInOrderNonRecursive(struct node *root) 
+{ 
+  /* set current to root of binary tree */
+  struct node *current = root; 
+  struct stackNode *s = NULL;  /* Initialize stack s */
+  bool done = 0; 
+  
+  while (!done) 
+  { 
+    /* Reach the left most tree node of the current tree node */
+    if(current !=  NULL) 
+    { 
+      push(&s, current);                                                
+      current = current->left;   
+    } 
+    else                                                              
+    { 
+      if (!isEmpty(s)) 
+      { 
+        current = pop(&s); 
+        printf("%d -> ", current->data);
+        current = current->right; 
+      } 
+      else
+        done = 1;  
+    } 
+  } /* end of while */  
+}      
+
+/* Iterative function for preorder traversal */
+void printPreOrderNonRecursive(struct node *root) 
+{ 
+  /* set current to root of binary tree */
+  struct node *current = root; 
+  struct stackNode *s = NULL;  /* Initialize stack s */
+  bool done = 0; 
+  
+  while (!done) 
+  { 
+    /* Reach the left most tree node of the current tree node */
+    if(current !=  NULL) 
+    {
+	  printf("%d -> ", current->data);	
+      push(&s, current);                                                
+      current = current->left;   
+    } 
+    else                                                              
+    { 
+      if (!isEmpty(s)) 
+      { 
+        current = pop(&s); 
+        current = current->right; 
+      } 
+      else
+        done = 1;  
+    } 
+  } /* end of while */  
+}      
+ 
+/* UTILITY FUNCTIONS */
+/* Function to push an item to stackNode*/
+void push(struct stackNode** topRef, struct node *t) 
+{ 
+  /* allocate tree node */
+  struct stackNode* newNode = (struct stackNode*) malloc(sizeof(struct stackNode)); 
+  
+  if(newNode == NULL) 
+  { 
+     printf("Stack Overflow \n"); 
+     getchar(); 
+     exit(0); 
+  }             
+  newNode->t  = t; 
+  newNode->next = (*topRef);    
+  (*topRef)    = newNode; 
+} 
+  
+/* The function returns true if stack is empty, otherwise false */
+int isEmpty(struct stackNode *top) 
+{ 
+   return (top == NULL)? 1 : 0; 
+}    
+  
+/* Function to pop an item from stack*/
+struct node *pop(struct stackNode** topRef) 
+{ 
+  struct node *res; 
+  struct stackNode *top; 
+  
+  if(isEmpty(*topRef)) 
+  { 
+     printf("Stack Underflow \n"); 
+     getchar(); 
+     exit(0); 
+  } 
+  else
+  { 
+     top = *topRef; 
+     res = top->t; 
+     *topRef = top->next; 
+     free(top); 
+     return res; 
+  } 
+} 
 
 struct node* newTree(int num)
 {
@@ -42,31 +160,31 @@ void printTree(struct node *tree)
 	printTree(tree->right);
 }
 
-void printPreorder(struct node *tree)
+void printPreorderRecursive(struct node *tree)
 {
 	if(tree == NULL)
 		return;
 	printf("%d -> ", tree->data);
-	printPreorder(tree->left);
-	printPreorder(tree->right);
+	printPreorderRecursive(tree->left);
+	printPreorderRecursive(tree->right);
 }
 
-void printPostorder(struct node *tree)
+void printPostorderRecursive(struct node *tree)
 {
 	if(tree == NULL)
 		return;
-	printPostorder(tree->left);
-	printPostorder(tree->right);
+	printPostorderRecursive(tree->left);
+	printPostorderRecursive(tree->right);
 	printf("%d -> ", tree->data);
 }
 
-void printInorder(struct node *tree)
+void printInorderRecursive(struct node *tree)
 {
 	if(tree == NULL)
 		return;
-	printInorder(tree->left);
+	printInorderRecursive(tree->left);
 	printf("%d -> ", tree->data);
-	printInorder(tree->right);
+	printInorderRecursive(tree->right);
 }
 
 int main()
@@ -83,15 +201,23 @@ int main()
 	//printTree(root);
 	
 	printf("Printing tree - InOrder...\n");
-	printInorder(root);
+	printInorderRecursive(root);
 	printf("NULL\n\n");
 	
 	printf("Printing tree - PreOrder...\n");
-	printPreorder(root);
+	printPreorderRecursive(root);
 	printf("NULL\n\n");
 	
 	printf("Printing tree - PostOrder...\n");
-	printPostorder(root);
+	printPostorderRecursive(root);
+	printf("NULL\n\n");
+	
+	printf("Printing tree - InOrder non-recursive...\n");
+	printInOrderNonRecursive(root);
+	printf("NULL\n\n");
+	
+	printf("Printing tree - PreOrder non-recursive...\n");
+	printPreOrderNonRecursive(root);
 	printf("NULL\n\n");
 	
 	return 0;
