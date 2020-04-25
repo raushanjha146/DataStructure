@@ -13,12 +13,20 @@ struct stackNode
 { 
   struct node *t; 				// poiner to tree node
   struct stackNode *next; 		// pointer to next stack node
-}; 
+};
+
+struct stackForPostOrder
+{ 
+  struct node *t; 				// poiner to tree node
+  struct stackForPostOrder *next; 		// pointer to next stack node
+};  
 
 void push(struct stackNode** topRef, struct node *t); 
 struct node *pop(struct stackNode** topRef); 
 int isEmpty(struct stackNode *top); 
-
+void pushForPostOrder(struct stackForPostOrder** topRef, struct node *t); 
+struct node *popForPostOrder(struct stackForPostOrder** topRef); 
+int isEmptyForPostOrder(struct stackForPostOrder *top);
 
 /* Iterative function for inorder traversal */
 void printInOrderNonRecursive(struct node *root) 
@@ -79,8 +87,60 @@ void printPreOrderNonRecursive(struct node *root)
     } 
   } /* end of while */  
 }      
- 
-/* UTILITY FUNCTIONS */
+
+/* Iterative function for postorder traversal */
+void printPostOrderNonRecursive(struct node *root) 
+{ 
+  /* set current to root of binary tree */
+  struct node *current = root; 
+  struct stackNode *s = NULL;  /* Initialize stack s */
+  struct stackForPostOrder *s2 = NULL;  /* Initialize stack for postorder */
+  bool done = 0; 
+  
+  while (!done) 
+  { 
+    /* Reach the left most tree node of the current tree node */
+    if(current !=  NULL) 
+    {
+	  
+	  push(&s, current);
+	  pushForPostOrder(&s2, current);
+      current = current->right;   
+    } 
+    else                                                              
+    { 
+      if (!isEmpty(s)) 
+      { 
+        current = pop(&s); 
+		//printf("%d -> ", current->data);
+        current = current->left; 
+      } 
+      else
+        done = 1;  
+    } 
+  } /* end of while */  
+  
+  while(!isEmptyForPostOrder(s2))
+  {
+	  printf("%d -> ", popForPostOrder(&s2)->data);
+  }
+}      
+
+void pushForPostOrder(struct stackForPostOrder** topRef, struct node *t)
+{ 
+  /* allocate tree node */
+  struct stackForPostOrder* newNode = (struct stackForPostOrder*) malloc(sizeof(struct stackForPostOrder)); 
+  
+  if(newNode == NULL) 
+  { 
+     printf("Stack Overflow \n"); 
+     getchar(); 
+     exit(0); 
+  }             
+  newNode->t  = t; 
+  newNode->next = (*topRef);    
+  (*topRef)    = newNode; 
+} 
 /* Function to push an item to stackNode*/
 void push(struct stackNode** topRef, struct node *t) 
 { 
@@ -97,12 +157,40 @@ void push(struct stackNode** topRef, struct node *t)
   newNode->next = (*topRef);    
   (*topRef)    = newNode; 
 } 
-  
+ 
+/* The function returns true if stack is empty, otherwise false */
+int isEmptyForPostOrder(struct stackForPostOrder *top) 
+{ 
+   return (top == NULL)? 1 : 0; 
+}  
+ 
 /* The function returns true if stack is empty, otherwise false */
 int isEmpty(struct stackNode *top) 
 { 
    return (top == NULL)? 1 : 0; 
 }    
+
+/* Function to pop an item from stack*/
+struct node *popForPostOrder(struct stackForPostOrder** topRef) 
+{ 
+  struct node *res; 
+  struct stackForPostOrder *top; 
+  
+  if(isEmptyForPostOrder(*topRef)) 
+  { 
+     printf("Stack Underflow \n"); 
+     getchar(); 
+     exit(0); 
+  } 
+  else
+  { 
+     top = *topRef; 
+     res = top->t; 
+     *topRef = top->next; 
+     free(top); 
+     return res; 
+  } 
+} 
   
 /* Function to pop an item from stack*/
 struct node *pop(struct stackNode** topRef) 
@@ -218,6 +306,10 @@ int main()
 	
 	printf("Printing tree - PreOrder non-recursive...\n");
 	printPreOrderNonRecursive(root);
+	printf("NULL\n\n");
+	
+	printf("Printing tree - PostOrder non-recursive...\n");
+	printPostOrderNonRecursive(root);
 	printf("NULL\n\n");
 	
 	return 0;
