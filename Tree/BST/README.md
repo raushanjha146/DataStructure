@@ -40,3 +40,8 @@ return node;
 * **Pre-Order** : 21, 14, 11, 18, 15, 19, 28, 25, 32, 30
 * **Post-Order** : 11, 15, 19, 18, 14, 25, 30, 32, 28, 21
 * **Level-Order** : 21, 14, 28, 11, 18, 25, 32, 15, 19, 30
+
+## Program
+
+[Insertion in BST and traverse recursive](https://github.com/raushanjha146/DataStructure/blob/master/Tree/BST/bst_insert_recursive_traversion.c)
+
